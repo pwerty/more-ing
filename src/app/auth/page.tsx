@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { setUser } from '@/lib/auth';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -37,6 +38,9 @@ export default function AuthPage() {
       const data = await response.json();
 
       if (response.ok) {
+        if (data.user) {
+          setUser(data.user);
+        }
         router.push('/');
       } else {
         setError(data.error);

@@ -1,91 +1,199 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { getUser, removeUser, User } from '@/lib/auth';
+
 export default function Home() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    setUser(getUser());
+  }, []);
+
+  const handleLogout = () => {
+    removeUser();
+    setUser(null);
+  };
   return (
     <div className="min-h-screen">
       {/* 고정 헤더 */}
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-b border-gray-200 z-50">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="text-2xl font-bold text-blue-600">모아링</div>
-          <a href="/auth" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            로그인
-          </a>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-gray-700">{user.username}</span>
+              <button 
+                onClick={handleLogout}
+                className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                로그아웃
+              </button>
+            </div>
+          ) : (
+            <a href="/auth" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              로그인
+            </a>
+          )}
         </div>
       </header>
 
       {/* 메인 컨텐츠 */}
       <main className="pt-16">
-        {/* 히어로 섹션 */}
-        <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">
-              모아링(more-ing)과 함께,<br />
-              게임할 사람들 같이 모아!
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              혼자 게임하기 지루하셨나요? 모아링에서 취향이 맞는 게임 파트너를 찾아보세요.
-            </p>
-            <button className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors">
-              지금 시작하기
-            </button>
-          </div>
-        </section>
+        {user ? (
+          // 로그인 후 - 개인 대시보드
+          <>
+            {/* 환영 섹션 */}
+            <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-16">
+              <div className="max-w-4xl mx-auto px-4">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  안녕하세요, {user.username}님! 🎮
+                </h1>
+                <p className="text-xl text-gray-600">
+                  오늘도 즐거운 게임 시간을 보내세요.
+                </p>
+              </div>
+            </section>
 
-        {/* 서비스 소개 */}
-        <section className="py-20">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center p-6">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🎮</span>
+            {/* 개인 통계 */}
+            <section className="py-16">
+              <div className="max-w-6xl mx-auto px-4">
+                <h2 className="text-2xl font-bold text-gray-900 mb-8">나의 게임 기록</h2>
+                <div className="grid md:grid-cols-4 gap-6">
+                  <div className="bg-white p-6 rounded-lg shadow-sm border">
+                    <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
+                    <div className="text-gray-600">참여한 파티</div>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow-sm border">
+                    <div className="text-3xl font-bold text-green-600 mb-2">8</div>
+                    <div className="text-gray-600">완료한 게임</div>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow-sm border">
+                    <div className="text-3xl font-bold text-purple-600 mb-2">4.8</div>
+                    <div className="text-gray-600">평균 평점</div>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg shadow-sm border">
+                    <div className="text-3xl font-bold text-orange-600 mb-2">24</div>
+                    <div className="text-gray-600">게임 친구</div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-3">다양한 게임 지원</h3>
-                <p className="text-gray-600">
-                  LOL, 배그, 오버워치부터 보드게임까지<br />
-                  모든 장르의 게임 파티를 만들어보세요
-                </p>
               </div>
-              <div className="text-center p-6">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">👥</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-3">쉬운 파티 구성</h3>
-                <p className="text-gray-600">
-                  원하는 게임과 시간을 설정하면<br />
-                  자동으로 비슷한 실력의 플레이어를 매칭해드려요
-                </p>
-              </div>
-              <div className="text-center p-6">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">⭐</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-3">신뢰할 수 있는 커뮤니티</h3>
-                <p className="text-gray-600">
-                  평점 시스템과 리뷰를 통해<br />
-                  건전하고 즐거운 게임 문화를 만들어가요
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+            </section>
 
-        {/* CTA 섹션 */}
-        <section className="bg-gray-50 py-20">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              더 이상 혼자 게임하지 마세요!
-            </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              지금 모아링에 가입하고 새로운 게임 친구들을 만나보세요.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                무료로 시작하기
-              </button>
-              <button className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
-                서비스 둘러보기
-              </button>
-            </div>
-          </div>
-        </section>
+            {/* 최근 활동 */}
+            <section className="py-16 bg-gray-50">
+              <div className="max-w-6xl mx-auto px-4">
+                <h2 className="text-2xl font-bold text-gray-900 mb-8">최근 활동</h2>
+                <div className="space-y-4">
+                  <div className="bg-white p-4 rounded-lg shadow-sm border">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold">리그 오브 레전드 랭크게임</h3>
+                        <p className="text-gray-600 text-sm">2024.01.15 - 승리</p>
+                      </div>
+                      <span className="text-green-600 font-semibold">+25 LP</span>
+                    </div>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm border">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold">배틀그라운드 스쿼드</h3>
+                        <p className="text-gray-600 text-sm">2024.01.14 - 2등</p>
+                      </div>
+                      <span className="text-blue-600 font-semibold">#2</span>
+                    </div>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm border">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold">오버워치 2 경쟁전</h3>
+                        <p className="text-gray-600 text-sm">2024.01.13 - 패배</p>
+                      </div>
+                      <span className="text-red-600 font-semibold">-18 SR</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </>
+        ) : (
+          // 로그인 전 - 서비스 소개
+          <>
+            {/* 히어로 섹션 */}
+            <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
+              <div className="max-w-4xl mx-auto px-4 text-center">
+                <h1 className="text-5xl font-bold text-gray-900 mb-6">
+                  모아링(more-ing)과 함께,<br />
+                  게임할 사람들 같이 모아!
+                </h1>
+                <p className="text-xl text-gray-600 mb-8">
+                  혼자 게임하기 지루하셨나요? 모아링에서 취향이 맞는 게임 파트너를 찾아보세요.
+                </p>
+                <a href="/auth" className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors">
+                  지금 시작하기
+                </a>
+              </div>
+            </section>
+
+            {/* 서비스 소개 */}
+            <section className="py-20">
+              <div className="max-w-6xl mx-auto px-4">
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="text-center p-6">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🎮</span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-3">다양한 게임 지원</h3>
+                    <p className="text-gray-600">
+                      LOL, 배그, 오버워치부터 보드게임까지<br />
+                      모든 장르의 게임 파티를 만들어보세요
+                    </p>
+                  </div>
+                  <div className="text-center p-6">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">👥</span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-3">쉬운 파티 구성</h3>
+                    <p className="text-gray-600">
+                      원하는 게임과 시간을 설정하면<br />
+                      자동으로 비슷한 실력의 플레이어를 매칭해드려요
+                    </p>
+                  </div>
+                  <div className="text-center p-6">
+                    <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">⭐</span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-3">신뢰할 수 있는 커뮤니티</h3>
+                    <p className="text-gray-600">
+                      평점 시스템과 리뷰를 통해<br />
+                      건전하고 즐거운 게임 문화를 만들어가요
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* CTA 섹션 */}
+            <section className="bg-gray-50 py-20">
+              <div className="max-w-4xl mx-auto px-4 text-center">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  더 이상 혼자 게임하지 마세요!
+                </h2>
+                <p className="text-lg text-gray-600 mb-8">
+                  지금 모아링에 가입하고 새로운 게임 친구들을 만나보세요.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <a href="/auth" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    무료로 시작하기
+                  </a>
+                  <button className="border border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+                    서비스 둘러보기
+                  </button>
+                </div>
+              </div>
+            </section>
+          </>
+        )}
       </main>
     </div>
   );
