@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react';
 import { getUser, removeUser, User } from '@/lib/auth';
 
+type PageMode = 'gather' | 'home' | 'settings';
+
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
+  const [currentMode, setCurrentMode] = useState<PageMode>('home');
 
   useEffect(() => {
     setUser(getUser());
@@ -20,6 +23,36 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-b border-gray-200 z-50">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="text-2xl font-bold text-blue-600">모아링</div>
+          
+          {user && (
+            <div className="flex items-center bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setCurrentMode('gather')}
+                className={`px-4 py-2 rounded-md transition-colors ${
+                  currentMode === 'gather' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                모아
+              </button>
+              <button
+                onClick={() => setCurrentMode('home')}
+                className={`px-4 py-2 rounded-md transition-colors ${
+                  currentMode === 'home' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                홈
+              </button>
+              <button
+                onClick={() => setCurrentMode('settings')}
+                className={`px-4 py-2 rounded-md transition-colors ${
+                  currentMode === 'settings' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                설정
+              </button>
+            </div>
+          )}
+          
           {user ? (
             <div className="flex items-center gap-4">
               <span className="text-gray-700">{user.username}</span>
@@ -41,80 +74,165 @@ export default function Home() {
       {/* 메인 컨텐츠 */}
       <main className="pt-16">
         {user ? (
-          // 로그인 후 - 개인 대시보드
+          // 로그인 후 - 모드에 따른 컨텐츠
           <>
-            {/* 환영 섹션 */}
-            <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-16">
-              <div className="max-w-4xl mx-auto px-4">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  안녕하세요, {user.username}님! 🎮
-                </h1>
-                <p className="text-xl text-gray-600">
-                  오늘도 즐거운 게임 시간을 보내세요.
-                </p>
-              </div>
-            </section>
-
-            {/* 개인 통계 */}
-            <section className="py-16">
-              <div className="max-w-6xl mx-auto px-4">
-                <h2 className="text-2xl font-bold text-gray-900 mb-8">나의 게임 기록</h2>
-                <div className="grid md:grid-cols-4 gap-6">
-                  <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
-                    <div className="text-gray-600">참여한 파티</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <div className="text-3xl font-bold text-green-600 mb-2">8</div>
-                    <div className="text-gray-600">완료한 게임</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <div className="text-3xl font-bold text-purple-600 mb-2">4.8</div>
-                    <div className="text-gray-600">평균 평점</div>
-                  </div>
-                  <div className="bg-white p-6 rounded-lg shadow-sm border">
-                    <div className="text-3xl font-bold text-orange-600 mb-2">24</div>
-                    <div className="text-gray-600">게임 친구</div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* 최근 활동 */}
-            <section className="py-16 bg-gray-50">
-              <div className="max-w-6xl mx-auto px-4">
-                <h2 className="text-2xl font-bold text-gray-900 mb-8">최근 활동</h2>
-                <div className="space-y-4">
-                  <div className="bg-white p-4 rounded-lg shadow-sm border">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold">리그 오브 레전드 랭크게임</h3>
-                        <p className="text-gray-600 text-sm">2024.01.15 - 승리</p>
+            {currentMode === 'gather' && (
+              // 모아 페이지 - 게시판 목록
+              <section className="py-8">
+                <div className="max-w-6xl mx-auto px-4">
+                  <h1 className="text-3xl font-bold text-gray-900 mb-8">게임 파티 모아보기</h1>
+                  <div className="space-y-4">
+                    <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">리그 오브 레전드 랭크 같이 해요!</h3>
+                          <p className="text-gray-600">실버 티어 이상 모집 | 3/5명</p>
+                          <p className="text-sm text-gray-500">오늘 오후 8시</p>
+                        </div>
+                        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">참여</button>
                       </div>
-                      <span className="text-green-600 font-semibold">+25 LP</span>
                     </div>
-                  </div>
-                  <div className="bg-white p-4 rounded-lg shadow-sm border">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold">배틀그라운드 스쿼드</h3>
-                        <p className="text-gray-600 text-sm">2024.01.14 - 2등</p>
+                    <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">배그 스쿼드 모집</h3>
+                          <p className="text-gray-600">다이아 이상 | 2/4명</p>
+                          <p className="text-sm text-gray-500">내일 오후 7시</p>
+                        </div>
+                        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">참여</button>
                       </div>
-                      <span className="text-blue-600 font-semibold">#2</span>
                     </div>
-                  </div>
-                  <div className="bg-white p-4 rounded-lg shadow-sm border">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold">오버워치 2 경쟁전</h3>
-                        <p className="text-gray-600 text-sm">2024.01.13 - 패배</p>
+                    <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">오버워치 2 경쟁전</h3>
+                          <p className="text-gray-600">플래티너 티어 | 4/6명</p>
+                          <p className="text-sm text-gray-500">오늘 오후 9시</p>
+                        </div>
+                        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">참여</button>
                       </div>
-                      <span className="text-red-600 font-semibold">-18 SR</span>
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
+
+            {currentMode === 'home' && (
+              // 홈 페이지 - 개인 대시보드
+              <>
+                <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-16">
+                  <div className="max-w-4xl mx-auto px-4">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                      안녕하세요, {user.username}님! 🎮
+                    </h1>
+                    <p className="text-xl text-gray-600">
+                      오늘도 즐거운 게임 시간을 보내세요.
+                    </p>
+                  </div>
+                </section>
+
+                <section className="py-16">
+                  <div className="max-w-6xl mx-auto px-4">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-8">나의 게임 기록</h2>
+                    <div className="grid md:grid-cols-4 gap-6">
+                      <div className="bg-white p-6 rounded-lg shadow-sm border">
+                        <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
+                        <div className="text-gray-600">참여한 파티</div>
+                      </div>
+                      <div className="bg-white p-6 rounded-lg shadow-sm border">
+                        <div className="text-3xl font-bold text-green-600 mb-2">8</div>
+                        <div className="text-gray-600">완료한 게임</div>
+                      </div>
+                      <div className="bg-white p-6 rounded-lg shadow-sm border">
+                        <div className="text-3xl font-bold text-purple-600 mb-2">4.8</div>
+                        <div className="text-gray-600">평균 평점</div>
+                      </div>
+                      <div className="bg-white p-6 rounded-lg shadow-sm border">
+                        <div className="text-3xl font-bold text-orange-600 mb-2">24</div>
+                        <div className="text-gray-600">게임 친구</div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="py-16 bg-gray-50">
+                  <div className="max-w-6xl mx-auto px-4">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-8">최근 활동</h2>
+                    <div className="space-y-4">
+                      <div className="bg-white p-4 rounded-lg shadow-sm border">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-semibold">리그 오브 레전드 랭크게임</h3>
+                            <p className="text-gray-600 text-sm">2024.01.15 - 승리</p>
+                          </div>
+                          <span className="text-green-600 font-semibold">+25 LP</span>
+                        </div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg shadow-sm border">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-semibold">배틀그라운드 스쿼드</h3>
+                            <p className="text-gray-600 text-sm">2024.01.14 - 2등</p>
+                          </div>
+                          <span className="text-blue-600 font-semibold">#2</span>
+                        </div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg shadow-sm border">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-semibold">오버워치 2 경쟁전</h3>
+                            <p className="text-gray-600 text-sm">2024.01.13 - 패배</p>
+                          </div>
+                          <span className="text-red-600 font-semibold">-18 SR</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </>
+            )}
+
+            {currentMode === 'settings' && (
+              // 설정 페이지
+              <section className="py-8">
+                <div className="max-w-4xl mx-auto px-4">
+                  <h1 className="text-3xl font-bold text-gray-900 mb-8">설정</h1>
+                  <div className="space-y-6">
+                    <div className="bg-white p-6 rounded-lg shadow-sm border">
+                      <h3 className="text-lg font-semibold mb-4">계정 연동</h3>
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <p className="font-medium">스팀 계정</p>
+                          <p className="text-sm text-gray-600">스팀 계정을 연동하여 게임 정보를 동기화하세요</p>
+                        </div>
+                        <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">연동하기</button>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-lg shadow-sm border">
+                      <h3 className="text-lg font-semibold mb-4">자기소개</h3>
+                      <textarea 
+                        className="w-full p-3 border border-gray-300 rounded-lg resize-none h-24"
+                        placeholder="자신을 소개해보세요..."
+                        defaultValue="안녕하세요! 게임을 좋아하는 {user.username}입니다."
+                      />
+                      <button className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">저장</button>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-lg shadow-sm border">
+                      <h3 className="text-lg font-semibold mb-4 text-red-600">위험 영역</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="font-medium text-red-600">계정 탈퇴</p>
+                          <p className="text-sm text-gray-600 mb-3">계정을 영구적으로 삭제합니다. 이 작업은 되돌릴 수 없습니다.</p>
+                          <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">계정 탈퇴</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
           </>
         ) : (
           // 로그인 전 - 서비스 소개
