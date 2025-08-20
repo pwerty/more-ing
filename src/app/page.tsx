@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getUser, removeUser, User } from '@/lib/auth';
+import RiotAPISection from './components/RiotAPISection';
 
 type PageMode = 'gather' | 'home' | 'settings';
 
@@ -77,9 +78,30 @@ export default function Home() {
           // 로그인 후 - 모드에 따른 컨텐츠
           <>
             {currentMode === 'gather' && (
+              
               // 모아 페이지 - 게시판 목록
               <section className="py-8">
                 <div className="max-w-6xl mx-auto px-4">
+                  {/* 미니게임 섹션 */}
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 mb-8 text-white">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-2xl font-bold mb-2">모아링 미니게임 🎮</h2>
+                        <p className="text-purple-100 mb-4">
+                          계정 인증을 완료한 플레이어만 입장 가능! 내 게임 실력에 따른 시작 아이템을 받고 시작하세요.
+                        </p>
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="bg-white/20 px-3 py-1 rounded-full">✨ 랭크별 시작 아이템</span>
+                          <span className="bg-white/20 px-3 py-1 rounded-full">🏆 리더보드 경쟁</span>
+                          <span className="bg-white/20 px-3 py-1 rounded-full">🎁 매일 보상</span>
+                        </div>
+                      </div>
+                      <a href="/minigame" className="bg-white text-purple-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg inline-block">
+                        미니게임 입장
+                      </a>
+                    </div>
+                  </div>
+
                   <h1 className="text-3xl font-bold text-gray-900 mb-8">게임 파티 모아보기</h1>
                   <div className="space-y-4">
                     <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
@@ -198,6 +220,7 @@ export default function Home() {
                 <div className="max-w-4xl mx-auto px-4">
                   <h1 className="text-3xl font-bold text-gray-900 mb-8">설정</h1>
                   <div className="space-y-6">
+                    <RiotAPISection />
                     <div className="bg-white p-6 rounded-lg shadow-sm border">
                       <h3 className="text-lg font-semibold mb-4">계정 연동</h3>
                       <div className="flex items-center justify-between mb-4">
