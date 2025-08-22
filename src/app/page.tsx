@@ -222,13 +222,72 @@ export default function Home() {
                   <div className="space-y-6">
                     <RiotAPISection />
                     <div className="bg-white p-6 rounded-lg shadow-sm border">
-                      <h3 className="text-lg font-semibold mb-4">계정 연동</h3>
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <p className="font-medium">스팀 계정</p>
-                          <p className="text-sm text-gray-600">스팀 계정을 연동하여 게임 정보를 동기화하세요</p>
+                      <h3 className="text-lg font-semibold mb-6">게임 계정 연동</h3>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white font-bold text-sm">LoL</span>
+                            </div>
+                            <div>
+                              <p className="font-medium">리그 오브 레전드</p>
+                              <p className="text-sm text-gray-600">랭크 정보와 게임 기록을 동기화하세요</p>
+                            </div>
+                          </div>
+                          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">연동하기</button>
                         </div>
-                        <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">연동하기</button>
+                        
+                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">스팀</span>
+                            </div>
+                            <div>
+                              <p className="font-medium">스팀 계정</p>
+                              <p className="text-sm text-gray-600">스팀 게임 라이브러리와 친구 목록을 연동하세요</p>
+                            </div>
+                          </div>
+                          <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">연동하기</button>
+                        </div>
+                        
+                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">OW</span>
+                            </div>
+                            <div>
+                              <p className="font-medium">오버워치 2</p>
+                              <p className="text-sm text-gray-600">경쟁전 랭크와 플레이 기록을 가져오세요</p>
+                            </div>
+                          </div>
+                          <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">연동하기</button>
+                        </div>
+                        
+                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">배그</span>
+                            </div>
+                            <div>
+                              <p className="font-medium">배틀그라운드</p>
+                              <p className="text-sm text-gray-600">티어와 전적 정보를 연동하세요</p>
+                            </div>
+                          </div>
+                          <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">연동하기</button>
+                        </div>
+                        
+                        <div className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">DC</span>
+                            </div>
+                            <div>
+                              <p className="font-medium">디스코드</p>
+                              <p className="text-sm text-gray-600">음성 채팅과 커뮤니티 기능을 연동하세요</p>
+                            </div>
+                          </div>
+                          <button className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600">연동하기</button>
+                        </div>
                       </div>
                     </div>
 
