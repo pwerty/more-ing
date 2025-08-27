@@ -9,10 +9,52 @@ type PageMode = 'gather' | 'home' | 'settings';
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [currentMode, setCurrentMode] = useState<PageMode>('home');
+  const [showWriteForm, setShowWriteForm] = useState(false);
+  const [postTitle, setPostTitle] = useState('');
+  const [postContent, setPostContent] = useState('');
+  const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
     setUser(getUser());
-  }, []);
+    if (currentMode === 'gather') {
+      fetchPosts();
+    }
+  }, [currentMode]);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('/api/posts');
+      const data = await response.json();
+      setPosts(data);
+    } catch (error) {
+      console.error('Failed to fetch posts:', error);
+    }
+  };
+
+  const handlePostSubmit = async () => {
+    if (!postTitle.trim() || !postContent.trim() || !user) return;
+
+    try {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: postTitle,
+          content: postContent,
+          userId: user.id
+        })
+      });
+
+      if (response.ok) {
+        setPostTitle('');
+        setPostContent('');
+        setShowWriteForm(false);
+        fetchPosts();
+      }
+    } catch (error) {
+      console.error('Failed to create post:', error);
+    }
+  };
 
   const handleLogout = () => {
     removeUser();
@@ -102,7 +144,72 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <h1 className="text-3xl font-bold text-gray-900 mb-8">게임 파티 모아보기</h1>
+                  <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900">게임 파티 모아보기</h1>
+                    <button 
+                      onClick={() => setShowWriteForm(true)}
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      글 작성
+                    </button>
+                  </div>
+
+                  {/* 글 작성 폼 */}
+                  {showWriteForm && (
+                    <div className="bg-white p-6 rounded-lg shadow-sm border mb-8">
+                      <h2 className="text-xl font-semibold mb-4">새 글 작성</h2>
+                      <div className="space-y-4">
+                        <input
+                          type="text"
+                          placeholder="제목을 입력하세요"
+                          value={postTitle}
+                          onChange={(e) => setPostTitle(e.target.value)}
+                          className="w-full p-3 border border-gray-300 rounded-lg"
+                        />
+                        <textarea
+                          placeholder="내용을 입력하세요"
+                          value={postContent}
+                          onChange={(e) => setPostContent(e.target.value)}
+                          rows={5}
+                          className="w-full p-3 border border-gray-300 rounded-lg resize-none"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handlePostSubmit}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                          >
+                            작성 완료
+                          </button>
+                          <button
+                            onClick={() => {
+                              setShowWriteForm(false);
+                              setPostTitle('');
+                              setPostContent('');
+                            }}
+                            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                          >
+                            취소
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 게시글 목록 */}
+                  <div className="space-y-4 mb-8">
+                    {posts.map((post) => (
+                      <div key={post.id} className="bg-white p-6 rounded-lg shadow-sm border">
+                        <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
+                        <p className="text-gray-600 mb-3">{post.content}</p>
+                        <div className="flex justify-between items-center text-sm text-gray-500">
+                          <span>작성자: {post.username}</span>
+                          <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">파티 모집</h2>
                   <div className="space-y-4">
                     <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
                       <div className="flex items-center justify-between">

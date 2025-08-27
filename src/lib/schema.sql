@@ -39,6 +39,15 @@ CREATE TABLE party_members (
   UNIQUE(party_id, user_id)
 );
 
+-- 게시글 테이블
+CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(200) NOT NULL,
+  content TEXT NOT NULL,
+  user_id INTEGER REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 기본 게임 데이터 삽입
 INSERT INTO games (name, category, max_players) VALUES
 ('리그 오브 레전드', 'MOBA', 5),
