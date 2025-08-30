@@ -6,8 +6,20 @@ export async function POST(request: NextRequest) {
   try {
     const { username, email, password } = await request.json();
 
-    if (!email.includes('@') || !email.includes('.')) {
-      return NextResponse.json({ error: '올바른 이메일 형식이 아닙니다.' }, { status: 400 });
+    // 닉네임 유효성 검사
+    if (!username || username.length < 4) {
+      return NextResponse.json({ error: '닉네임은 4글자 이상이어야 합니다.' }, { status: 400 });
+    }
+
+    // 이메일 유효성 검사
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|net|org|kr|co\.kr)$/i;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: '올바른 이메일 형식이 아닙니다. (.com, .net, .org, .kr, .co.kr 도메인만 허용)' }, { status: 400 });
+    }
+
+    // 비밀번호 유효성 검사
+    if (!password || password.length < 6) {
+      return NextResponse.json({ error: '비밀번호는 6글자 이상이어야 합니다.' }, { status: 400 });
     }
 
     const existingUser = await pool.query('SELECT id FROM users WHERE email = $1', [email]);

@@ -6,7 +6,8 @@ export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
-    if (!email.includes('@') || !email.includes('.')) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|net|org|kr|co\.kr)$/i;
+    if (!emailRegex.test(email)) {
       return NextResponse.json({ error: '올바른 이메일 형식이 아닙니다.' }, { status: 400 });
     }
 

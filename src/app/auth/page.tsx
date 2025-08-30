@@ -14,16 +14,35 @@ export default function AuthPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
+  const validateUsername = (username: string) => {
+    return username.length >= 4;
+  };
+
   const validateEmail = (email: string) => {
-    return email.includes('@') && email.includes('.');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|net|org|kr|co\.kr)$/i;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    return password.length >= 6;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
+    if (!isLogin && !validateUsername(formData.username)) {
+      setError('닉네임은 4글자 이상이어야 합니다.');
+      return;
+    }
+
     if (!validateEmail(formData.email)) {
-      setError('올바른 이메일 형식이 아닙니다.');
+      setError('올바른 이메일 형식이 아닙니다. (.com, .net, .org, .kr, .co.kr 도메인만 허용)');
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
+      setError('비밀번호는 6글자 이상이어야 합니다.');
       return;
     }
 
